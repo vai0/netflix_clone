@@ -1,5 +1,10 @@
 import React from 'react';
 import axios from 'axios';
+import Navbar from 'Navbar';
+import SearchResults from 'SearchResults';
+import HomePage from 'HomePage';
+import Stream from 'Stream';
+import Footer from 'Footer';
 
 const APIKEY = '068ee0cfb0216f492786450e89bf044e';
 const BASE_URL = 'https://api.themoviedb.org/3';
@@ -10,8 +15,9 @@ class App extends React.Component {
 
     this.state = {
       // main page, browse by category schema
-      showHomePage: true,
-      showResults: false,
+      homePageView: true,
+      resultsView: false,
+      streamView: false,
       mainPage: {
         hero: {
           title: '',
@@ -213,14 +219,33 @@ class App extends React.Component {
   }
 
   render() {
-    return (
-      <div>
-        <Navbar />
-        <SearchResults />
-        <HomePage />
-        <Footer />
-      </div>
-    );
+    if (this.state.homePageView) {
+      return (
+        <div className="app">
+          <Navbar />
+          <HomePage />
+          <Footer />
+        </div>
+      );
+    } else if (this.state.resultsView) {
+      return (
+        <div className="app">
+          <Navbar />
+          <SearchResults />
+          <Footer />
+        </div>
+      );
+    } else if (this.state.streamView) {
+      return (
+        <div className="app">
+          <Stream />
+        </div>
+      );
+    } else {
+      return (
+        <div className="app"></div>
+      );
+    }
   }
 }
 

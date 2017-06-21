@@ -8,7 +8,7 @@ class SearchResults extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="search-results">
         <div className="search-results-title"></div>
         <SearchResultsRow />
       </div>

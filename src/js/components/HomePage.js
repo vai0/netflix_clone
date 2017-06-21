@@ -9,7 +9,7 @@ class HomePage extends React.Component {
 
   render() {
     return (
-      <div className="homepage">
+      <div className="home-page">
         <Hero />
         <HomePageCategories />
       </div>

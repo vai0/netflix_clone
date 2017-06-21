@@ -1,5 +1,5 @@
 import React from 'react';
-import Search from 'Search';
+import SearchBar from 'SearchBar';
 
 class Navbar extends React.Component {
   constructor(props) {
@@ -12,12 +12,8 @@ class Navbar extends React.Component {
         <div className="navbar-logo"></div>
         <div className="browse-button"></div>
         <ul className="browse-dropdown">
-          <li></li>
-          <li></li>
         </ul>
-
-        <Search />
-
+        <SearchBar />
         <div className="account-component">
           <div className="account-avatar"></div>
           <div className="account-name"></div>

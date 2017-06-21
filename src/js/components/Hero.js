@@ -8,10 +8,10 @@ class Hero extends React.Component {
   render() {
     return (
       <div className="hero">
-        <div class="hero-title"></div>
-        <div class="hero-overview"></div>
-        <a class="hero-play-button"></a>
-        <img class="hero-backdrop"/>
+        <div className="hero-title"></div>
+        <div className="hero-overview"></div>
+        <a className="hero-play-button"></a>
+        <img className="hero-backdrop"/>
       </div>
     );
   }

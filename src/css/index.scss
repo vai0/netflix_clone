@@ -1,0 +1,41 @@
+@import '_normalize';
+
+* {
+  box-sizing: border-box;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+
+  .navbar {
+    display: flex;
+    flex-direction: row;
+    height: 72px;
+    border: 1px solid black;
+    background-color: white;
+  }
+
+  .search-results {
+    height: 500px;
+    border: 1px solid black;
+    background-color: yellow;
+  }
+
+  .home-page {
+    height: 500px;
+    border: 1px solid black;
+    background-color: green;
+  }
+
+  .stream {
+    height: 100vh;
+    background-color: black;
+  }
+
+  .footer {
+    height: 170px;
+    border: 1px solid black;
+    background-color: grey;
+  }
+}
