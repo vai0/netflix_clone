@@ -11,13 +11,14 @@ let netflix = {
       // overview:
     },
     categories: {
-      drama: []
+      // drama: []
     }
   },
   // search results schema
-  genreList: [],
   results: [],
+  // movie expanded by user
   selectedMovie: {},
+  genreList: [],
   populateCategories() {
     // populate the categories
     this.getMoviesByCategory('action');
@@ -40,13 +41,15 @@ let netflix = {
     // hit API with category, get response, manipulate response to fit schema, then set to mainPage.categories[category]
     const genreId = this.genreList[category];
     return axios.get(`${BASE_URL}/discover/movie`, {
-      params: {
-        with_genres: genreId,
-        api_key: APIKEY
-      }
-    }).then(response => response.data.results).then(movies => {
-      this.mainPage.categories[category] = movies.map(movie => this.manipulateMovieData(movie, 'w300'));
-    });
+        params: {
+          with_genres: genreId,
+          api_key: APIKEY
+        }
+      }).then(response => {
+        response.data.results
+      }).then(movies => {
+        this.mainPage.categories[category] = movies.map(movie => this.manipulateMovieData(movie, 'w300'));
+      });
   },
   getMoviesBySearch(query) {
     // update this.results with response
@@ -55,43 +58,71 @@ let netflix = {
         query,
         api_key: APIKEY
       }
-    }).then((response) => {
-      // console.log('response.data: ', response.data);
+    }).then(response => {
+      console.log('response.data: ', response.data);
       const movies = response.data.results;
       this.results = movies.map(movie => this.manipulateMovieData(movie, 'w300'));
       console.log('results: ', this.results);
+    });
+  },
+  getMoviesByCast(query) {
+    // search for personId by query, use the first result
+    axios.get(`${BASE_URL}/search/person`, {
+      params: {
+        query,
+        api_key: APIKEY
+      }
+    }).then(response => {
+      // update this.results with response
+      let personId = response.data.results[0].id;
+      axios.get(`${BASE_URL}/discover/movie`, {
+        params: {
+          with_cast: personId,
+          api_key: APIKEY
+        }
+      }).then(response => {
+        const movies = response.data.results;
+        this.results = movies.map(movie => this.manipulateMovieData(movie, 'w300'));
+        console.log('results: ', this.results);
+      });
     });
   },
   getMovieDetails(movie_id) {
     // update this.selectedMovie with response
     axios.get(`${BASE_URL}/movie/${movie_id}`, {
       params: {
-        append_to_response: 'credits,release_dates,similar',
+        append_to_response: 'credits,release_dates,similar,reviews',
         api_key: APIKEY
       }
     }).then((response) => {
       const movie = response.data;
-      // console.log(movie);
+      console.log(movie);
       this.selectedMovie = this.manipulateMovieData(movie, 'original');
       console.log('selectedMovie: ', this.selectedMovie);
     });
   },
   manipulateMovieData(movie, backdrop_size) {
-    let cast;
-    let director;
-    let similar;
-    let runtime;
-    let genres;
-    let mpaaRating;
+    let cast, director, similar, runtime, genres, mpaaRating, reviews;
     let year = this.getYear(movie);
     let backdrop = (movie.backdrop_path) ? movie.backdrop_path : movie.poster_path;
-    if (movie.genres) { genres = movie.genres.map(genre => genre.name); };
-    if (movie.similar) { similar = movie.similar.results; };
-    if (movie.release_dates) { mpaaRating = this.getMpaaRating(movie); };
-    if (movie.runtime) { runtime = this.formatRuntime(movie.runtime); };
+    if (movie.genres) {
+      genres = movie.genres.map(genre => genre.name);
+    }
+    if (movie.similar) {
+      similar = movie.similar.results;
+    }
+    if (movie.release_dates) {
+      mpaaRating = this.getMpaaRating(movie);
+    }
+    if (movie.runtime) {
+      runtime = this.formatRuntime(movie.runtime);
+    }
     if (movie.credits) {
       cast = movie.credits.cast.map(person => person.name);
       director = this.getDirector(movie);
+    }
+    if (movie.reviews) {
+      reviews = movie.reviews.results.map(review => review.content);
     }
     return {
       year,
@@ -101,6 +132,7 @@ let netflix = {
       similar,
       genres,
       mpaaRating,
+      reviews,
       id: movie.id,
       title: movie.title,
       backdrop: `https://image.tmdb.org/t/p/${backdrop_size}${backdrop}`,
